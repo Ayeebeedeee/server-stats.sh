@@ -1,0 +1,55 @@
+#!/bin/bash
+<<comment
+This project is about server performance with formatted output
+comment
+
+echo "=================================================="
+echo "              SERVER PERFORMANCE                  "
+echo "=================================================="
+date_time(){
+        printf "%-25s %s\n" "Current Date & Time:" "$(date '+%Y-%m-%d %H:%M:%S')"
+}
+
+usage(){
+        cpu_usage=$(top -bn1 | grep "Cpu(s)")
+
+    user_cpu=$(echo "$cpu_usage" | awk '{print $2}' | tr -d ',')
+    system_cpu=$(echo "$cpu_usage" | awk '{print $4}' | tr -d ',')
+    idle_cpu=$(echo "$cpu_usage" | awk '{print $8}' | tr -d ',')
+
+    total_usage=$(awk "BEGIN {print 100 - $idle_cpu}")
+
+    echo "---------------- CPU Usage ----------------"
+    printf "%-20s %6.2f%%\n" "User CPU:" "$user_cpu"
+    printf "%-20s %6.2f%%\n" "System CPU:" "$system_cpu"
+    printf "%-20s %6.2f%%\n" "Idle CPU:" "$idle_cpu"
+    printf "%-20s %6.2f%%\n" "Total Usage:" "$total_usage"
+}
+
+disk_usage(){
+
+          disk=$(df -h / | awk 'NR==2')
+
+    total=$(echo "$disk" | awk '{print $2}')
+    used=$(echo "$disk" | awk '{print $3}')
+    free=$(echo "$disk" | awk '{print $4}')
+    percent=$(echo "$disk" | awk '{print $5}')
+
+    echo "---------------- Disk Usage ----------------"
+    printf "%-20s %s\n" "Total Disk:" "$total"
+    printf "%-20s %s\n" "Used Disk:" "$used"
+    printf "%-20s %s\n" "Free Disk:" "$free"
+    printf "%-20s %s\n" "Usage:" "$percent"
+}
+top_cpu(){
+         echo "----------- Top 5 Processes (CPU) -----------"
+    printf "%-10s %-20s %-10s\n" "PID" "Process" "CPU%"
+
+    ps -eo pid,comm,%cpu --sort=-%cpu | awk 'NR==1 || NR<=6 {
+        if (NR>1) printf "%-10s %-20s %-10s\n", $1, $2, $3
+    }'
+}
+
+date_time
+usage
+disk_usage
