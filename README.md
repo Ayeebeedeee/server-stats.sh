@@ -1,5 +1,7 @@
 SERVER PERFORMANCE MONITORING SCRIPT
 
+Project Url: https://github.com/Ayeebeedeee/server-stats.sh/tree/main
+
 Project Description:
 This project is a Bash script that monitors and displays basic server performance statistics. It helps in understanding how system resources like CPU, memory, and disk are being used.
 
